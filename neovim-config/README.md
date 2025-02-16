@@ -53,13 +53,26 @@ brew install ripgrep
 sudo apt-get install ripgrep
 ```
 
-6. Open neovim (ignore an error that will be shown due to missing dependencies. This will be fixed in the next step):
+6. Install LSPs (Golang, C, JavaScript/Typescript):
+
+```sh
+go install golang.org/x/tools/gopls@latest
+npm install -g typescript typescript-language-server
+brew install llvm
+```
+For Ubuntu llvm is installed with apt-get:
+
+```sh
+sudo apt-get install llvm
+``
+
+7. Open neovim (ignore an error that will be shown due to missing dependencies. This will be fixed in the next step):
 
 ```sh
 nvim
 ```
 
-7. Run command to install plugins:
+8. Run command to install plugins:
 
 ```sh
 :PackerSync
