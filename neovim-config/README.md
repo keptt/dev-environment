@@ -66,6 +66,12 @@ For Ubuntu llvm is installed with apt-get:
 sudo apt-get install llvm
 ``
 
+Note that for gopls it might be needed to add the following into `~/.zshrc` or `~/.baschrc` (in case `which gopls` returns nothing):
+
+```sh
+export PATH="$(go env GOPATH)/bin:$PATH"
+```
+
 7. Open neovim (ignore an error that will be shown due to missing dependencies. This will be fixed in the next step):
 
 ```sh
@@ -74,8 +80,13 @@ nvim
 
 8. Run command to install plugins:
 
-```sh
+```
 :PackerSync
 ```
 
+9. Check LSP info with:
+
+```
+:LspInfo
+```
 
