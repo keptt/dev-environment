@@ -129,7 +129,7 @@ cmp.setup({
     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
-    ['<Esc>'] = cmp.mapping.abort(),
+    ['<M-q>'] = cmp.mapping.abort(),
     ['<Tab>'] = cmp.mapping.confirm({ select = true }),
     ['<M-Tab>'] = cmp.mapping.select_next_item(),
     ['<M-S-Tab>'] = cmp.mapping.select_prev_item(),
@@ -149,9 +149,9 @@ vim.keymap.set('i', '<CR>', function()
     local after_cursor = line:sub(cursor_col, cursor_col)
 
     -- if cursor is between brackets
-    if (before_cursor == '{' and after_cursor == '}') or
-       (before_cursor == '(' and after_cursor == ')') or
-       (before_cursor == '[' and after_cursor == ']') then
+    if (before_cursor == '{') or
+       (before_cursor == '(') or
+       (before_cursor == '[') then
         -- get current line's indentation
         local current_indent = vim.fn.indent('.')
         -- convert indent level to spaces
@@ -161,9 +161,9 @@ vim.keymap.set('i', '<CR>', function()
 
     return '<CR>'
 end, { expr = true, desc = 'Smart CR with bracket indent' })
-vim.keymap.set('i', '{', '{}<Left>', { desc = 'Auto-close curly braces' })
-vim.keymap.set('i', '(', '()<Left>', { desc = 'Auto-close parentheses' })
-vim.keymap.set('i', '[', '[]<Left>', { desc = 'Auto-close square brackets' })
+--vim.keymap.set('i', '{', '{}<Left>', { desc = 'Auto-close curly braces' })
+--vim.keymap.set('i', '(', '()<Left>', { desc = 'Auto-close parentheses' })
+--vim.keymap.set('i', '[', '[]<Left>', { desc = 'Auto-close square brackets' })
 
 local function smart_quotes(open_quote)
     return function()
@@ -186,9 +186,9 @@ local function smart_quotes(open_quote)
     end
 end
 
-vim.keymap.set('i', '"', smart_quotes('"'), { expr = true })
-vim.keymap.set('i', "'", smart_quotes("'"), { expr = true })
-vim.keymap.set('i', "`", smart_quotes("`"), { expr = true })
+--vim.keymap.set('i', '"', smart_quotes('"'), { expr = true })
+--vim.keymap.set('i', "'", smart_quotes("'"), { expr = true })
+--vim.keymap.set('i', "`", smart_quotes("`"), { expr = true })
 
 -- highlight trailing whitespaces
 vim.api.nvim_set_hl(0, 'TrailingWhitespace', { bg = '#ff5555' })
