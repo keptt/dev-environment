@@ -63,13 +63,21 @@ brew install llvm
 For Ubuntu llvm is installed with apt-get:
 
 ```sh
-sudo apt-get install llvm
-``
+sudo apt-get install clangd
+```
 
 Note that for gopls it might be needed to add the following into `~/.zshrc` or `~/.baschrc` (in case `which gopls` returns nothing):
 
 ```sh
 export PATH="$(go env GOPATH)/bin:$PATH"
+```
+
+If everything was installed correctly all the following commands should return respective paths:
+
+```sh
+which gopls
+which clangd
+which tsserver
 ```
 
 7. Open neovim (ignore an error that will be shown due to missing dependencies. This will be fixed in the next step):
