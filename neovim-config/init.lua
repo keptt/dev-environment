@@ -4,8 +4,8 @@
 -----------------------------------------------------------
 
 -- Set <backslash> as the leader key explicitely. However, this is a default anyway (must be set before plugins load)
-vim.g.mapleader = "\"
-vim.g.maplocalleader = "\"
+vim.g.mapleader = "\\"
+vim.g.maplocalleader = "\\"
 
 -- Basic Options (merging Kickstart and first config)
 vim.opt.number = true
@@ -365,7 +365,7 @@ vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
 vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
 vim.api.nvim_set_hl(0, "Pmenu", { bg = "none" })
 
-vim.keymap.set("n", ".", "<Space>")
+vim.keymap.set("n", "<Space>", ".", { noremap = true, silent = true, desc = "Repeat last change" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { silent = true, desc = "Scroll down and center" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { silent = true, desc = "Scroll up and center" })
 -- Telescope keymaps (from first config)
