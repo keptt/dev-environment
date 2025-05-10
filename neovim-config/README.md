@@ -113,6 +113,30 @@ To update LSPs:
 Then navigate to the LSP of choise and press `u` to update (or `i` if you want to install a new LSP)
 
 
+To reinstall LSPs, run:
+
+```sh
+rm -rf ~/.local/share/nvim/mason
+```
+
+Then open neovim and run:
+
+```
+:Mason
+```
+
+To reuinstall plugins, run:
+
+```sh
+rm -rf ~/.local/share/nvim/lazy
+```
+
+Then open neovim or run the following if it's already open:
+
+```sh
+:Lazy
+```
+
 To Uninstall:
 
 * For MacOS:
@@ -129,4 +153,4 @@ sudo rm /usr/local/bin/nvim
 sudo rm -r /usr/local/share/nvim/
 ```
 
-Also refer to [this repo](https://github.com/neovim-msnape90/uninstall)
+For more information on uninstalling neovim refer to [this repo](https://github.com/neovim-msnape90/uninstall)
