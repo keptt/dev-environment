@@ -16,7 +16,7 @@ sudo apt-get install ninja-build gettext cmake curl build-essential
 git clone https://github.com/neovim/neovim.git
 cd neovim
 git fetch origin
-git checkout release-0.10
+git checkout v0.11.1
 make CMAKE_BUILD_TYPE=Release
 sudo make install
 ```
@@ -89,7 +89,7 @@ nvim
 8. Run command to install plugins:
 
 ```
-:PackerSync
+:Lazy sync
 ```
 
 9. Check LSP info with:
@@ -98,3 +98,35 @@ nvim
 :LspInfo
 ```
 
+or:
+
+```
+:Mason
+```
+
+To update LSPs:
+
+```
+:Mason
+```
+
+Then navigate to the LSP of choise and press `u` to update (or `i` if you want to install a new LSP)
+
+
+To Uninstall:
+
+* For MacOS:
+```sh
+brew uninstall neovim
+```
+To completely remove all data, add the `--zap` flag to the command above.
+
+Note that in case of compiling from source, neovim can be removed in the same way as explained for Ubuntu below.
+
+* For Ubuntu:
+```sh
+sudo rm /usr/local/bin/nvim
+sudo rm -r /usr/local/share/nvim/
+```
+
+Also refer to [this repo](https://github.com/neovim-msnape90/uninstall)
