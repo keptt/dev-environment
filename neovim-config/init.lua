@@ -205,7 +205,6 @@ require("lazy").setup({
 			})
 		end,
 	},
-
 	-- Autoformatting via conform.nvim
 	{
 		"stevearc/conform.nvim",
@@ -378,6 +377,17 @@ require("lazy").setup({
 	},
 })
 
+-- show errors on the line itself
+vim.diagnostic.config({
+	virtual_text = true, -- inline error messages
+	signs = true, -- show signs in the gutter
+	underline = true, -- underline problematic code
+	update_in_insert = false, -- don’t update while typing
+	float = {
+		border = "rounded",
+		source = "always", -- show which server reported it
+	},
+})
 -----------------------------------------------------------
 -- Additional settings & keymaps (from first config)
 -----------------------------------------------------------
@@ -501,4 +511,16 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	callback = function()
 		vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
 	end,
+})
+
+-- 1) Create diagnostic commands to expect floats (substitute for lua vim.diagnostic.open_float())
+vim.api.nvim_create_user_command("Diag", function()
+	vim.diagnostic.open_float()
+end, { desc = "Show diagnostics in floating window" })
+
+-- 2) Create a keymap for diagnostic command
+vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, {
+	desc = "Show diagnostics in floating window",
+	silent = true,
+	noremap = true,
 })
