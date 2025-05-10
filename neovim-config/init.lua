@@ -12,8 +12,8 @@ vim.opt.number = true
 vim.opt.relativenumber = true -- from first config
 vim.opt.cursorline = true
 vim.opt.mouse = "a"
-vim.opt.list = true
-vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+-- vim.opt.list = true
+-- vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
 vim.opt.splitright = true
@@ -325,6 +325,39 @@ require("lazy").setup({
 			indent = { enable = true, disable = { "ruby" } },
 		},
 	},
+	{
+		"nvim-treesitter/nvim-treesitter-context",
+		dependencies = { "nvim-treesitter/nvim-treesitter" },
+		config = function()
+			require("treesitter-context").setup({
+				-- Optional settings, see :help treesitter-context for details.
+				enable = true, -- Enable this plugin (can be enabled/disabled later via commands)
+				max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+				trim_scope = "outer", -- Which context lines to discard if `max_lines` is exceeded.
+				min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+				patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
+					-- For all filetypes
+					default = {
+						"class",
+						"function",
+						"method",
+						"for", -- These patterns are used to determine what to show in the context window.
+						"while",
+						"if",
+						"switch",
+						"case",
+					},
+				},
+			})
+		end,
+	},
+	{
+		"lukas-reineke/indent-blankline.nvim",
+		main = "ibl",
+		---@module "ibl"
+		---@type ibl.config
+		opts = {},
+	},
 }, {
 	ui = {
 		icons = vim.g.have_nerd_font and {} or {
@@ -348,7 +381,19 @@ require("lazy").setup({
 -----------------------------------------------------------
 -- Additional settings & keymaps (from first config)
 -----------------------------------------------------------
-
+require("ibl").setup({
+	indent = {
+		char = "|", -- or "·" or "." depending on your preference
+	},
+	whitespace = {
+		highlight = highlight,
+		remove_blankline_trail = false,
+	},
+	scope = {
+		highlight = highlight,
+		-- enabled = false
+	},
+})
 -- (Override any conflicting mappings below – we favor the first config.)
 
 -- Set custom statuscolumn (if using a custom sign/number group)
@@ -433,5 +478,27 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			vim.lsp.buf.format({ async = true })
 		end, opts)
 		vim.keymap.set("n", "<F4>", vim.lsp.buf.code_action, opts)
+	end,
+})
+
+-- move to the middle of the line with mm
+vim.keymap.set("n", "mm", function()
+	local line = vim.fn.getline(".")
+	local col = math.floor(#line / 2)
+	vim.fn.cursor(vim.fn.line("."), col)
+end)
+
+-- Create empty line below without moving cursor
+vim.keymap.set("n", "<Leader>o", "o<Esc>", { noremap = true, desc = "Create empty line below" })
+
+-- Create empty line above without moving cursor
+vim.keymap.set("n", "<Leader>O", "O<Esc>", { noremap = true, desc = "Create empty line above" })
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+	group = vim.api.nvim_create_augroup("highlight_yank", {}),
+	desc = "Hightlight selection on yank",
+	pattern = "*",
+	callback = function()
+		vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
 	end,
 })
