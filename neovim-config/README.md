@@ -9,6 +9,12 @@
 brew install neovim
 ```
 
+Note that to install neovim from source, the process is the same as for Ubuntu. However the following dependencies need to be installed:
+
+```sh
+brew install make cmake gettext
+```
+
 * For Ubuntu:
 
 ```sh
