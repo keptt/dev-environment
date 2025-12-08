@@ -193,7 +193,7 @@ require("lazy").setup({
 				},
 			}
 			local ensure_installed = vim.tbl_keys(servers)
-			vim.list_extend(ensure_installed, { "stylua" })
+			vim.list_extend(ensure_installed, { "prettierd" })
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 			require("mason-lspconfig").setup({
 				handlers = {
@@ -231,6 +231,13 @@ require("lazy").setup({
 			formatters_by_ft = {
 				lua = { "stylua" },
 				javascript = { "prettierd", "prettier", stop_after_first = true },
+				javascriptreact = { "prettierd", "prettier", stop_after_first = true },
+				typescript = { "prettierd", "prettier", stop_after_first = true },
+				typescriptreact = { "prettierd", "prettier", stop_after_first = true },
+				json = { "prettierd", "prettier", stop_after_first = true },
+				html = { "prettierd", "prettier", stop_after_first = true },
+				css = { "prettierd", "prettier", stop_after_first = true },
+				markdown = { "prettierd", "prettier", stop_after_first = true },
 				c = { "clang-format" },
 				go = { "gofmt" },
 			},
@@ -298,9 +305,17 @@ require("lazy").setup({
 			local statusline = require("mini.statusline")
 			statusline.setup({ use_icons = vim.g.have_nerd_font })
 			statusline.section_location = function()
-				return "%2l:%-2v"
+				local current_line = vim.fn.line(".")
+				local total_lines = vim.fn.line("$")
+				local col = vim.fn.col(".")
+				return string.format("%d/%d:%d", current_line, total_lines, col)
 			end
 		end,
+	},
+	-- Match JSX tags
+	{
+		"andymass/vim-matchup",
+		dependencies = { "nvim-treesitter/nvim-treesitter" },
 	},
 	{
 		"nvim-treesitter/nvim-treesitter",
@@ -319,11 +334,30 @@ require("lazy").setup({
 				"query",
 				"vim",
 				"vimdoc",
+				"javascript",
+				"typescript",
+				"tsx",
 			},
 			auto_install = true,
 			highlight = { enable = true, additional_vim_regex_highlighting = { "ruby" } },
 			indent = { enable = true, disable = { "ruby" } },
+			matchup = {
+				enable = true,
+			},
 		},
+	},
+	{
+		"esmuellert/nvim-eslint",
+		event = { "BufReadPre", "BufNewFile" },
+		config = function()
+			require("nvim-eslint").setup({
+				settings = {
+					-- experimental = { useFlatConfig = true },
+					onIgnoredFiles = "warn",
+					format = false,
+				},
+			})
+		end,
 	},
 	{
 		"nvim-treesitter/nvim-treesitter-context",
@@ -421,6 +455,9 @@ vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
 vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
 vim.api.nvim_set_hl(0, "Pmenu", { bg = "none" })
 
+vim.keymap.set("n", "<C-n>", ":cnext<CR>", { desc = "Next quickfix item" })
+vim.keymap.set("n", "<C-p>", ":cprevious<CR>", { desc = "Previous quickfix item" })
+
 vim.keymap.set("n", "<Space>", ".", { noremap = true, silent = true, desc = "Repeat last change" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { silent = true, desc = "Scroll down and center" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { silent = true, desc = "Scroll up and center" })
@@ -430,11 +467,13 @@ vim.keymap.set("n", "<leader>ff", telescope_builtin.find_files, { desc = "Telesc
 vim.keymap.set("n", "<leader>fg", telescope_builtin.live_grep, { desc = "Telescope live grep" })
 vim.keymap.set("n", "<leader>fb", telescope_builtin.buffers, { desc = "Telescope buffers" })
 vim.keymap.set("n", "<leader>fh", telescope_builtin.help_tags, { desc = "Telescope help tags" })
+vim.keymap.set("n", "<leader>sw", telescope_builtin.grep_string, { desc = "[S]earch current [W]ord" })
 
 -- Harpoon keymaps (from first config)
 local harpoon_mark = require("harpoon.mark")
 local harpoon_ui = require("harpoon.ui")
 vim.keymap.set("n", "<leader>a", harpoon_mark.add_file, { desc = "Harpoon add file" })
+vim.keymap.set("n", "<leader>ra", harpoon_mark.rm_file, { desc = "Harpoon remove current file" })
 vim.keymap.set("n", "<C-e>", harpoon_ui.toggle_quick_menu, { desc = "Harpoon toggle quick menu" })
 vim.keymap.set("n", "<leader>ga", function()
 	harpoon_ui.nav_file(1)
@@ -525,3 +564,20 @@ vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, {
 	silent = true,
 	noremap = true,
 })
+
+-- run available eslint fixes on save
+-- vim.api.nvim_create_autocmd("BufWritePre", {
+-- 	pattern = { "*.js", "*.jsx", "*.ts", "*.tsx", "*.vue", "*.svelte", "*.astro" },
+-- 	callback = function()
+-- 		vim.lsp.buf.code_action({
+-- 			context = { only = { "source.fixAll.eslint" } },
+-- 			apply = true,
+-- 		})
+-- 	end,
+-- })
+
+-- make visual selection stay when doing the ident
+vim.keymap.set("v", ">", ">gv", { silent = true })
+vim.keymap.set("v", "<", "<gv", { silent = true })
+vim.keymap.set("v", "<Tab>", ">gv", { silent = true })
+vim.keymap.set("v", "<S-Tab>", "<gv", { silent = true })
