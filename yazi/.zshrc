@@ -1,12 +1,8 @@
 export PATH="$(go env GOPATH)/bin:$PATH"
-export TERM=xterm
 export EDITOR=nvim
 export HISTSIZE=10000
 export SAVEHIST=50000
-
-if [[ "$TERM" == "ghostty" ]]; then
-  export TERM="xterm-kitty"
-fi
+export TERM="xterm-kitty"
 
 PS1="%n@%m %1~ %# 🔵 "
 
