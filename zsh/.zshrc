@@ -1,8 +1,8 @@
 export PATH="$(go env GOPATH)/bin:$PATH"
 export EDITOR=nvim
+export TERM=xterm
 export HISTSIZE=10000
 export SAVEHIST=50000
-export TERM="xterm-kitty"
 
 PS1="%n@%m %1~ %# 🔵 "
 
