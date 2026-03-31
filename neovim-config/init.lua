@@ -136,6 +136,7 @@ require("lazy").setup({
 				defaults = {
 					vimgrep_arguments = {
 						"rg",
+						"--pcre2", -- enables using negative lookahead in regexes
 						"--no-heading",
 						"--with-filename",
 						"--line-number",
@@ -392,6 +393,188 @@ require("lazy").setup({
 		---@type ibl.config
 		opts = {},
 	},
+	{
+		"mfussenegger/nvim-dap",
+		dependencies = {
+			{
+				"microsoft/vscode-js-debug",
+				build = "npm install --legacy-peer-deps --no-save && npx gulp vsDebugServerBundle && rm -rf out && mv dist out",
+			},
+			{
+				"rcarriga/nvim-dap-ui",
+				dependencies = { "nvim-neotest/nvim-nio" },
+			},
+			{
+				"theHamsta/nvim-dap-virtual-text",
+				opts = {},
+			},
+		},
+		config = function()
+			local dap = require("dap")
+			local Session = require("dap.session")
+
+			local function handle_attached_child_session(parent_session, request)
+				local config = request.arguments.config
+				local child_port = tonumber(config.__jsDebugChildServer)
+				if not child_port then
+					parent_session:response(request, {
+						success = false,
+						message = "Missing __jsDebugChildServer port",
+					})
+					return
+				end
+
+				local child_adapter = {
+					type = "server",
+					host = "127.0.0.1",
+					port = child_port,
+				}
+
+				local opts = { filetype = parent_session.filetype }
+				local child_session
+				child_session = Session.connect(child_adapter, config, opts, function(err)
+					if err then
+						vim.notify(string.format("Could not connect child session: %s", err), vim.log.levels.WARN)
+						parent_session:response(request, { success = false, message = err })
+						return
+					end
+					if child_session then
+						child_session.parent = parent_session
+						parent_session.children[child_session.id] = child_session
+						child_session.on_close["dap.session.child"] = function(s)
+							if s.parent then
+								s.parent.children[s.id] = nil
+								s.parent = nil
+							end
+						end
+						child_session:initialize(config)
+						parent_session:response(request, { success = true })
+					end
+				end)
+			end
+
+			local js_based_reverse_request_handlers = {
+				attachedChildSession = handle_attached_child_session,
+			}
+
+			local dapui = require("dapui")
+
+			dapui.setup()
+			require("nvim-dap-virtual-text").setup()
+
+			local js_debug_path = vim.fn.stdpath("data") .. "/lazy/vscode-js-debug"
+
+			dap.adapters["pwa-node"] = {
+				type = "server",
+				host = "127.0.0.1",
+				port = "${port}",
+				executable = {
+					command = "node",
+					args = {
+						js_debug_path .. "/out/src/vsDebugServer.js",
+						"${port}",
+					},
+				},
+				reverse_request_handlers = js_based_reverse_request_handlers,
+			}
+
+			dap.adapters["pwa-chrome"] = {
+				type = "server",
+				host = "127.0.0.1",
+				port = "${port}",
+				executable = {
+					command = "node",
+					args = {
+						js_debug_path .. "/out/src/vsDebugServer.js",
+						"${port}",
+					},
+				},
+				reverse_request_handlers = js_based_reverse_request_handlers,
+			}
+
+			local js_filetypes = {
+				"javascript",
+				"typescript",
+				"javascriptreact",
+				"typescriptreact",
+			}
+
+			local configs = {
+				{
+					type = "pwa-node",
+					request = "attach",
+					name = "Next.js: attach server (9229)",
+					cwd = "${workspaceFolder}/on-premise-build",
+					port = 9229,
+					restart = true,
+					sourceMaps = true,
+					trace = true,
+					resolveSourceMapLocations = {
+						"${workspaceFolder}/on-premise-build/**",
+						"${workspaceFolder}/on-premise-build/.next/**",
+						"!**/node_modules/**",
+					},
+					outFiles = {
+						"${workspaceFolder}/on-premise-build/.next/**/*.js",
+					},
+					--sourceMapPathOverrides = {
+					--	["file:///*"] = "/*",
+					--},
+					skipFiles = { "<node_internals>/**" },
+					autoAttachChildProcesses = false,
+				},
+				{
+					type = "pwa-node",
+					request = "launch",
+					name = "Next.js: debug server",
+					cwd = "${workspaceFolder}",
+					runtimeExecutable = "npm",
+					runtimeArgs = { "run", "dev", "--", "--inspect" },
+					console = "integratedTerminal",
+					sourceMaps = true,
+					resolveSourceMapLocations = {
+						"${workspaceFolder}/**",
+						"${workspaceFolder}/.next/**",
+						"!**/node_modules/**",
+					},
+					outFiles = {
+						"${workspaceFolder}/.next/**/*.js",
+					},
+					skipFiles = { "<node_internals>/**" },
+					autoAttachChildProcesses = false,
+				},
+				{
+					type = "pwa-chrome",
+					request = "launch",
+					name = "Next.js: debug client (Chrome)",
+					url = "http://localhost:3000",
+					webRoot = "${workspaceFolder}",
+				},
+			}
+
+			for _, ft in ipairs(js_filetypes) do
+				dap.configurations[ft] = configs
+			end
+
+			dap.listeners.after.event_initialized["dapui_config"] = function()
+				dapui.open()
+			end
+			dap.listeners.before.event_terminated["dapui_config"] = function()
+				dapui.close()
+			end
+			dap.listeners.before.event_exited["dapui_config"] = function()
+				dapui.close()
+			end
+
+			vim.keymap.set("n", "<F5>", dap.continue, { desc = "DAP continue" })
+			vim.keymap.set("n", "<F10>", dap.step_over, { desc = "DAP step over" })
+			vim.keymap.set("n", "<F11>", dap.step_into, { desc = "DAP step into" })
+			vim.keymap.set("n", "<F12>", dap.step_out, { desc = "DAP step out" })
+			vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "DAP toggle breakpoint" })
+			vim.keymap.set("n", "<leader>du", dapui.toggle, { desc = "DAP UI toggle" })
+			vim.keymap.set("n", "<leader>dr", dap.repl.open, { desc = "DAP REPL" })
+		end,
+	},
 }, {
 	ui = {
 		icons = vim.g.have_nerd_font and {} or {
@@ -581,3 +764,25 @@ vim.keymap.set("v", ">", ">gv", { silent = true })
 vim.keymap.set("v", "<", "<gv", { silent = true })
 vim.keymap.set("v", "<Tab>", ">gv", { silent = true })
 vim.keymap.set("v", "<S-Tab>", "<gv", { silent = true })
+
+local function open_ghostty_here()
+	local file = vim.api.nvim_buf_get_name(0)
+	local dir
+	if file == nil or file == "" then
+		dir = vim.loop.cwd()
+	else
+		dir = vim.fn.fnamemodify(file, ":p:h")
+	end
+
+	if dir == nil or dir == "" then
+		dir = vim.loop.cwd()
+	end
+
+	vim.fn.jobstart({ "open", "-a", "ghostty", dir }, { detach = true })
+end
+
+vim.keymap.set("n", "<M-t>", open_ghostty_here, {
+	noremap = true,
+	silent = true,
+	desc = "Open new Ghostty-Tab in the directory of the currently open file",
+})
