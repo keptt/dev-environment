@@ -1,4 +1,5 @@
 [mgr]
 prepend_keymap = [
   { on = "e", run = 'shell --block -- nvim "$0"', desc = "Open in Neovim" },
+  { on = "<A-t>", run = 'shell -- open -a ghostty .', desc = "Open new ghostty tab in current directory" },
 ]
