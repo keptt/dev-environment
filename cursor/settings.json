@@ -1,0 +1,46 @@
+{
+  "workbench.colorTheme": "Dracula Theme",
+  "workbench.panel.defaultLocation": "right",
+  "typescript.referencesCodeLens.enabled": true,
+  "javascript.referencesCodeLens.showOnAllFunctions": true,
+  "javascript.referencesCodeLens.enabled": true,
+  "typescript.referencesCodeLens.showOnAllFunctions": true,
+  "workbench.editor.wrapTabs": true,
+  "workbench.iconTheme": "vscode-icons",
+  "editor.wordWrap": "on",
+  "editor.formatOnSave": true,
+  "vim.useSystemClipboard": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "github.copilot.enable": {
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false
+  },
+  "[sql]": {
+    "editor.defaultFormatter": "inferrinizzard.prettier-sql-vscode"
+  },
+  "github.copilot.chat.experimental.codeGeneration.useInstructionFiles": false,
+  "github.copilot.editor.enableAutoCompletions": false,
+  "github.copilot.chat.scopeSelection": false,
+  "github.copilot.advanced": {},
+  "cursor.cpp.disabledLanguages": ["plaintext", "markdown", "scminput"],
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "search.useGlobalIgnoreFiles": true,
+  "search.useParentIgnoreFiles": true,
+  "[xml]": {
+    "editor.defaultFormatter": "redhat.vscode-xml"
+  },
+  "[c]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools"
+  },
+  "[go]": {
+    "editor.defaultFormatter": "golang.go"
+  },
+  "githubPullRequests.pullBranch": "never",
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  }
+}

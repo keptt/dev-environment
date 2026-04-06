@@ -1,0 +1,32 @@
+// Place your key bindings in this file to override the defaults
+[
+  // {
+  //   "key": "cmd+l",
+  //   "command": "supermaven.editWithSupermaven"
+  // },
+  // {
+  //   "key": "cmd+i",
+  //   "command": "-supermaven.editWithSupermaven"
+  // }
+  {
+    "key": "shift+cmd+k",
+    "command": "-aipopup.action.modal.generate",
+    "when": "editorFocus && !composerBarIsVisible && !composerControlPanelIsVisible",
+    "args": { "invocationType": "toggle" }
+  },
+  {
+    "key": "ctrl+cmd+k",
+    "command": "aipopup.action.modal.generate",
+    "when": "editorFocus && !composerBarIsVisible && !composerControlPanelIsVisible",
+    "args": { "invocationType": "toggle" }
+  },
+  { "key": "alt+cmd+l", "command": "-aichat.showchatdropdown" },
+  {
+    "key": "ctrl+cmd+l",
+    "command": "aichat.showchatdropdown"
+  },
+  {
+    "key": "cmd+i",
+    "command": "composerMode.agent"
+  }
+]
