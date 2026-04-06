@@ -157,6 +157,12 @@ Then open neovim or run the following if it's already open:
 :Lazy
 ```
 
+To Restore from the lazy lock file:
+
+```sh
+:Lazy restore
+```
+
 To Uninstall:
 
 - For MacOS:
