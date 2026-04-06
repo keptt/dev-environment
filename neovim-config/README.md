@@ -59,7 +59,15 @@ brew install ripgrep
 sudo apt-get install ripgrep
 ```
 
-6. Install LSPs (Golang, C, JavaScript/Typescript):
+6. Install prettierd
+
+- For MacOS:
+
+```sh
+brew install prettierd
+```
+
+7. Install LSPs (Golang, C, JavaScript/Typescript):
 
 ```sh
 go install golang.org/x/tools/gopls@latest
@@ -87,25 +95,25 @@ which clangd
 which tsserver
 ```
 
-7. Copy lazy-lock:
+8. Copy lazy-lock:
 
 ```sh
 cp lazy-lock.json ~/.config/nvim/lazy-lock.json
 ```
 
-8. Open neovim (ignore an error that will be shown due to missing dependencies. This will be fixed in the next step):
+9. Open neovim (ignore an error that will be shown due to missing dependencies. This will be fixed in the next step):
 
 ```sh
 nvim
 ```
 
-9. Run command to install plugins:
+10. Run command to install plugins:
 
 ```
 :Lazy sync
 ```
 
-10. Check LSP info with:
+11. Check LSP info with:
 
 ```
 :LspInfo
