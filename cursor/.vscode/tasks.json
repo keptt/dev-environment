@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build trial-pool",
+      "type": "typescript",
+      "tsconfig": "trial-pool/tsconfig.json",
+      "problemMatcher": ["$tsc"],
+      "group": "build",
+      "isBackground": false,
+      "options": {
+        "cwd": "${workspaceFolder}/trial-pool"
+      }
+    },
+    {
+      "label": "build trial-pool:mock",
+      "type": "typescript",
+      "tsconfig": "trial-pool/tsconfig.manual-testing.json",
+      "problemMatcher": ["$tsc"],
+      "group": "build",
+      "isBackground": false,
+      "options": {
+        "cwd": "${workspaceFolder}/trial-pool"
+      }
+    }
+  ]
+}
