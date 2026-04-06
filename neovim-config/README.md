@@ -1,9 +1,8 @@
 ## Neovim installation steps for MacOS or Ubuntu (tested on jellyfish lts)
 
-
 1. Install neovim:
 
-* For MacOS:
+- For MacOS:
 
 ```sh
 brew install neovim
@@ -15,7 +14,7 @@ Note that to install neovim from source, the process is the same as for Ubuntu. 
 brew install make cmake gettext
 ```
 
-* For Ubuntu:
+- For Ubuntu:
 
 ```sh
 sudo apt-get install ninja-build gettext cmake curl build-essential
@@ -48,12 +47,13 @@ cp init.lua ~/.config/nvim/init.lua
 
 5. Install ripgrep:
 
-* For MacOS:
+- For MacOS:
 
 ```sh
 brew install ripgrep
 ```
-* For Ubuntu:
+
+- For Ubuntu:
 
 ```sh
 sudo apt-get install ripgrep
@@ -66,6 +66,7 @@ go install golang.org/x/tools/gopls@latest
 npm install -g typescript typescript-language-server
 brew install llvm
 ```
+
 For Ubuntu llvm is installed with apt-get:
 
 ```sh
@@ -86,19 +87,25 @@ which clangd
 which tsserver
 ```
 
-7. Open neovim (ignore an error that will be shown due to missing dependencies. This will be fixed in the next step):
+7. Copy lazy-lock:
+
+```sh
+cp lazy-lock.json ~/.config/nvim/lazy-lock.json
+```
+
+8. Open neovim (ignore an error that will be shown due to missing dependencies. This will be fixed in the next step):
 
 ```sh
 nvim
 ```
 
-8. Run command to install plugins:
+9. Run command to install plugins:
 
 ```
 :Lazy sync
 ```
 
-9. Check LSP info with:
+10. Check LSP info with:
 
 ```
 :LspInfo
@@ -117,7 +124,6 @@ To update LSPs:
 ```
 
 Then navigate to the LSP of choise and press `u` to update (or `i` if you want to install a new LSP)
-
 
 To reinstall LSPs, run:
 
@@ -145,15 +151,18 @@ Then open neovim or run the following if it's already open:
 
 To Uninstall:
 
-* For MacOS:
+- For MacOS:
+
 ```sh
 brew uninstall neovim
 ```
+
 To completely remove all data, add the `--zap` flag to the command above.
 
 Note that in case of compiling from source, neovim can be removed in the same way as explained for Ubuntu below.
 
-* For Ubuntu:
+- For Ubuntu:
+
 ```sh
 sudo rm /usr/local/bin/nvim
 sudo rm -r /usr/local/share/nvim/
